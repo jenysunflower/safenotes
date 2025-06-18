@@ -1,0 +1,39 @@
+name: Seguridad con Dependency-Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  seguridad:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 🧬 Clonar repositorio
+      uses: actions/checkout@v3
+
+    - name: 🟢 Instalar Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '14'
+
+    - name: 📦 Instalar dependencias
+      run: npm install
+
+    - name: ✅ Ejecutar pruebas
+      run: npm test
+
+    - name: 🛡️ Ejecutar Dependency-Check
+      run: |
+        sudo apt-get install wget unzip -y
+        wget https://github.com/jeremylong/DependencyCheck/releases/latest/download/dependency-check-zip.zip
+        unzip dependency-check-zip.zip -d dependency-check
+        ./dependency-check/bin/dependency-check.sh --project "SafeNotes" --scan . --format HTML --out reports
+
+    - name: 📄 Subir reporte como artefacto
+      uses: actions/upload-artifact@v3
+      with:
+        name: dependency-check-report
+        path: reports/dependency-check-report.html
