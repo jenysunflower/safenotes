@@ -33,7 +33,7 @@ jobs:
         ./dependency-check/bin/dependency-check.sh --project "SafeNotes" --scan . --format HTML --out reports
 
     - name: 📄 Subir reporte como artefacto
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: dependency-check-report
         path: reports/dependency-check-report.html
